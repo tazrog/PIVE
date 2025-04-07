@@ -15,6 +15,7 @@ def center_text(lines):
     # Center each line and store in a new list
     centered_lines = [line.center(terminal_width) for line in lines]
     return centered_lines
+
 def Exit_Program():
     os.remove("in.txt")
     os.remove("out.txt")
@@ -28,19 +29,64 @@ def Exit_Program():
     
     print ("Files Deleted")
     quit()
+
+def Disk_Location():
+    # Check if the disk.txt file exists
+    if os.path.isfile("disk.txt"):
+        # Read the disk location from the file
+        with open("disk.txt", "r") as f:
+            disk = f.read().strip()
+        
+        return disk
+   
+    # Check if the IVE.DSK file exists in the directory
+    if os.path.isfile("disk/IVE.DSK"):
+        print("IVE.DSK file found in disk directory.")
+        return "disk"
+    # If the file does not exist, prompt the user for the location
+    print("IVE.DSK file not found in disk directory.")
+    print("Please enter the location of the IVE.DSK file.")
+    print("Example: /home/user/IVE.DSK")
+    print("Or enter 'disk' to use the default location.")
+    # Prompt the user for the location of the IVE.DSK file      disk
+
     
+    disk=input("Enter the location of the IVE.DSK file: ")
+    # Check if the file exists  
+    if os.path.isfile(disk+"/IVE.DSK"):
+        #Save disk loacation to txt file
+        with open("disk.txt", "w") as f:
+            f.write(disk)
+        f.close()
+        print("IVE.DSK file found in the specified location.")
+    else:
+        print("IVE.DSK file not found in the specified location.")
+        print("Please check the location and try again.")
+        # Prompt the user for the location of the IVE.DSK file
+        disk=input("Enter the location of the IVE.DSK file: ")
+        # Check if the file exists
+        if os.path.isfile(disk+"/IVE.DSK"):
+            #Save disk loacation to txt file
+            with open("disk.txt", "w") as f:
+                f.write(disk)
+            f.close()
+            print("IVE.DSK file found in the specified location.")
+       
+
+    return disk
     
 
 def Get_Files():
-    command = "decb copy IVE25.DSK,OUT.DAT out.txt"
+    disk = Disk_Location()
+    command = "decb copy "+disk+"/IVE.DSK,OUT.DAT out.txt"
     os.system(command)
-    command = "decb copy IVE25.DSK,IN.DAT in.txt"
+    command = "decb copy "+disk+"/IVE.DSK,IN.DAT in.txt"
     os.system(command)
-    command = "decb copy IVE25.DSK,CAT.DAT cat.txt"
+    command = "decb copy "+disk+"/IVE.DSK,CAT.DAT cat.txt"
     os.system(command)
-    command = "decb copy IVE25.DSK,DATE.DAT date.txt"
+    command = "decb copy "+disk+"/IVE.DSK,DATE.DAT date.txt"
     os.system(command)
-    command = "decb copy IVE25.DSK,YEAR.DAT year.txt"
+    command = "decb copy "+disk+"/IVE.DSK,YEAR.DAT year.txt"
     os.system(command)
 
 def add_new_line_after_chars(input_file, output_file, cat):
@@ -61,6 +107,7 @@ def add_new_line_after_chars(input_file, output_file, cat):
         file.write(new_content)
 
 def Get_Cat():
+    disk = Disk_Location()
     input_file = 'cat.txt'
     output_file = 'pcat.txt'
     add_new_line_after_chars(input_file, output_file,1)
@@ -73,7 +120,7 @@ def Get_Cat():
     with open("in.txt", 'w') as file:
            file.writelines(lines)
     file.close()
-    command = "decb copy in.txt IVE25.DSK,IN.DAT -r"
+    command = "decb copy in.txt "+disk+"/IVE.DSK,IN.DAT -r"
     os.system(command)
 
 def total():
@@ -160,6 +207,7 @@ def intro():
     main_menu()
 
 def Change_Date():
+    disk= Disk_Location()
     print ("new Date")
     month=input("Month ")
     day=input("Day ")
@@ -168,7 +216,7 @@ def Change_Date():
     with open("date.txt", "w") as file:
             file.write(date)
             file.close()
-    command="decb copy date.txt IVE25.DSK,DATE.DAT -r"
+    command="decb copy date.txt "+disk+"/IVE.DSK,DATE.DAT -r"
     os.system(command)
     main_menu()
 
@@ -358,6 +406,7 @@ def List_Income():
     main_menu()
 
 def Delete(tbl,num,ptble,dat):
+    disk =Disk_Location()
     df= pd.read_fwf(tbl,header=None, names =["Date","Cat","Amt"])
     df.index +=1
     df=df.drop(index=num)
@@ -370,13 +419,15 @@ def Delete(tbl,num,ptble,dat):
     continuous_row_string = ''.join(continuous_row)
 
 # Save the continuous row to a text file
+
     with open(ptble, 'w') as f:
         f.write(continuous_row_string)
-    command="decb copy "+ptble+" IVE25.DSK,"+dat+" -r"
+    command="decb copy "+ptble+" "+disk+"/IVE.DSK,"+dat+" -r"
     os.system(command)
     main_menu()
 
 def Enter_Income():
+       disk=Disk_Location()
        again =0
        system('clear')
        date=Get_Date()
@@ -422,11 +473,12 @@ def Enter_Income():
        with open("in.txt", 'w') as file:
            file.writelines(lines)
        file.close()  
-       command = "decb copy in.txt IVE25.DSK,IN/DAT -r"
+       command = "decb copy in.txt "+disk+"/IVE.DSK,IN/DAT -r"
        os.system(command)
        main_menu()
 
 def Enter_Expense():
+       disk=Disk_Location()
        again =0
        date=Get_Date()
        system('clear')
@@ -485,7 +537,7 @@ def Enter_Expense():
        with open("out.txt", 'w') as file:
             file.writelines(lines)
        file.close()
-       command = "decb copy out.txt IVE25.DSK,OUT/DAT -r"
+       command = "decb copy out.txt "+disk+"/IVE.DSK,OUT/DAT -r"
        os.system(command)
        if again == 1:
             again =0
