@@ -180,18 +180,21 @@ def Monthly_Graph():
     income_values.reverse()
     expense_values.reverse()
 
-    # Create a horizontal stacked bar graph
+    # Create a horizontal bar graph that shows both expense and income bars on screen
     plt.figure(figsize=(10, 6))
+    bar_width = 0.4  # Width of each bar
+
+    # Create positions for the bars
     y_positions = range(len(months))
 
-    # Plot income and expense as stacked bars
-    plt.barh(y_positions, income_values, color='green', label='Income')
-    plt.barh(y_positions, expense_values, left=income_values, color='red', label='Expense')
+    # Plot income and expense bars side by side
+    plt.barh([y - bar_width / 2 for y in y_positions], income_values, height=bar_width, color='green', label='Income')
+    plt.barh([y + bar_width / 2 for y in y_positions], expense_values, height=bar_width, color='red', label='Expense')
 
     # Add text annotations for income and expense values
     for i, (income, expense) in enumerate(zip(income_values, expense_values)):
-        plt.text(income / 2, i, f"${income:,.2f}", va='center', ha='center', color='white', fontsize=8)
-        plt.text(income + (expense / 2), i, f"${expense:,.2f}", va='center', ha='center', color='white', fontsize=8)
+        plt.text(income, i - bar_width / 2, f"${income:,.2f}", va='center', ha='left', color='black')
+        plt.text(expense, i + bar_width / 2, f"${expense:,.2f}", va='center', ha='left', color='black')
 
     # Set labels and title
     plt.yticks(y_positions, months)
@@ -199,7 +202,7 @@ def Monthly_Graph():
     plt.xlabel('Amount')
     plt.ylabel('Month')
     plt.legend()
-    plt.grid(axis='x', linestyle='--', alpha=0.7)
+    plt.grid(axis='x')
     plt.tight_layout()
     plt.show()
 
