@@ -6,6 +6,8 @@ import os
 import time
 from os import system, name
 import shutil
+import numpy as np
+import matplotlib.pyplot as plt
 
 again =0
 def center_text(lines):
@@ -70,11 +72,8 @@ def Disk_Location():
             with open("disk.txt", "w") as f:
                 f.write(disk)
             f.close()
-            print("IVE.DSK file found in the specified location.")
-       
-
+            print("IVE.DSK file found in the specified location.")     
     return disk
-    
 
 def Get_Files():
     disk = Disk_Location()
@@ -115,7 +114,7 @@ def Monthly_IVE():
     dfout['Month']=dfout['Date'].str[:2]
     print ("M          Income         Expense          Diff")
     print ("-----------------------------------------------------")
-    for i in range(1,12):
+    for i in range(1,13):
         if i==1:
             a="01"
         if i==2:
@@ -143,14 +142,72 @@ def Monthly_IVE():
         
         Search_Month= (dfin[dfin['Month'].str.contains(a, case = False)]['Amt'].sum())
         Search_Month_Exp= (dfout[dfout['Month'].str.contains(a, case = False)]['Amt'].sum())
-        #Search_Month=print(f"${Search_Month:,.2f}")
-        
         print (f"Month {a}      ${Search_Month:,.2f}     ${Search_Month_Exp:,.2f}         ${Search_Month-Search_Month_Exp:,.2f}")   
+    print ("-----------------------------------------------------")
+    print(f"${dfin['Amt'].sum():,.2f}   ${dfout['Amt'].sum():,.2f}         ${dfin['Amt'].sum()-dfout['Amt'].sum():,.2f}")
+    print ("Press [M]enu - [Q]uit")
+    a=input()
+    if a=="m":
+        main_menu()
+    if a=="q":
+        Exit_Program()
+def Monthly_Graph():
+    system('clear')
+    print("Income vs Expense")
+    dfin = pd.read_fwf("pin.txt", header=None, names=["Date", "Cat", "Amt"])
+    dfin['Month'] = dfin['Date'].str[:2]
+    dfout = pd.read_fwf("pout.txt", header=None, names=["Date", "Cat", "Amt"])
+    dfout['Month'] = dfout['Date'].str[:2]
 
+    months = []
+    income_values = []
+    expense_values = []
+
+    for i in range(1, 13):
+        a = f"{i:02}"  # Format month as two digits (e.g., "01", "02", ..., "12")
+        Search_Month = dfin[dfin['Month'].str.contains(a, case=False)]['Amt'].sum()
+        Search_Month_Exp = dfout[dfout['Month'].str.contains(a, case=False)]['Amt'].sum()
+
+        months.append(a)
+        income_values.append(Search_Month)
+        expense_values.append(Search_Month_Exp)
+
+        print(f"Month {a}      ${Search_Month:,.2f}     ${Search_Month_Exp:,.2f}         ${Search_Month - Search_Month_Exp:,.2f}")
+
+    print("-----------------------------------------------------")
+    print(f"${dfin['Amt'].sum():,.2f}   ${dfout['Amt'].sum():,.2f}         ${dfin['Amt'].sum() - dfout['Amt'].sum():,.2f}")
+
+    # Reverse the order of months, income, and expense for top-to-bottom display
+    months.reverse()
+    income_values.reverse()
+    expense_values.reverse()
+
+    # Create a horizontal bar graph
+    plt.barh(months, income_values, color='green', label='Income')
+    plt.barh(months, expense_values, color='red', label='Expense')
+
+    for i, (income, expense) in enumerate(zip(income_values, expense_values)):
+        plt.text(income, months[i], f"${income:,.2f}", va='center', ha='left')
+        plt.text(expense, months[i], f"${expense:,.2f}", va='center', ha='left')
+
+    plt.title('Income vs Expense')
+    plt.xlabel('Amount')
+    plt.ylabel('Month')
+    plt.legend()
+    plt.grid(axis='x')
+    plt.tight_layout()
+
+    plt.show()
+
+    print("")
+    print("Press [M]enu - [Q]uit")
+    a = input()
+    if a == "m":
+        main_menu()
+    if a == "q":
+        Exit_Program() 
     
     
-   
-
 def Get_Cat():
     disk = Disk_Location()
     input_file = 'cat.txt'
@@ -295,7 +352,6 @@ def main_menu():
     if x=="1":
         Enter_Income()
     if x=="2":
-
         Enter_Expense()
     if x=="3":
         List_Income()
@@ -303,6 +359,9 @@ def main_menu():
         List_Expense()
     if x=="5":
         Monthly_IVE()
+    if x=="6":
+        Monthly_Graph()
+
     if x=="q":
         Exit_Program()
 
