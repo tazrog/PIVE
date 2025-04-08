@@ -8,6 +8,7 @@ from os import system, name
 import shutil
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 again =0
 def center_text(lines):
@@ -29,8 +30,8 @@ def Exit_Program():
     if os.path.exists("pcat.txt"):
         os.remove("pcat.txt")    
     print ("Files Deleted")
-    quit()
-
+    sys.exit()
+    
 def Disk_Location():
     # Check if the disk.txt file exists
     if os.path.isfile("disk.txt"):
@@ -100,7 +101,10 @@ def add_new_line_after_chars(input_file, output_file, cat):
         file.write(new_content)
 
 def Monthly_IVE():
-    system('clear')
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     print("Income vs Expense")
     dfin = pd.read_fwf("pin.txt",header=None, names =["Date","Cat","Amt"])
     dfin['Month']=dfin['Date'].str[:2]
@@ -145,14 +149,17 @@ def Monthly_IVE():
         main_menu()
     if a=="q":
         Exit_Program()
+
 def Monthly_Graph():
-    system('clear')
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     print("Income vs Expense")
     dfin = pd.read_fwf("pin.txt", header=None, names=["Date", "Cat", "Amt"])
     dfin['Month'] = dfin['Date'].str[:2]
     dfout = pd.read_fwf("pout.txt", header=None, names=["Date", "Cat", "Amt"])
     dfout['Month'] = dfout['Date'].str[:2]
-
     months = []
     income_values = []
     expense_values = []
@@ -161,13 +168,10 @@ def Monthly_Graph():
         a = f"{i:02}"  # Format month as two digits (e.g., "01", "02", ..., "12")
         Search_Month = dfin[dfin['Month'].str.contains(a, case=False)]['Amt'].sum()
         Search_Month_Exp = dfout[dfout['Month'].str.contains(a, case=False)]['Amt'].sum()
-
         months.append(a)
         income_values.append(Search_Month)
         expense_values.append(Search_Month_Exp)
-
         print(f"Month {a}      ${Search_Month:,.2f}     ${Search_Month_Exp:,.2f}         ${Search_Month - Search_Month_Exp:,.2f}")
-
     print("-----------------------------------------------------")
     print(f"${dfin['Amt'].sum():,.2f}   ${dfout['Amt'].sum():,.2f}         ${dfin['Amt'].sum() - dfout['Amt'].sum():,.2f}")
 
@@ -176,21 +180,27 @@ def Monthly_Graph():
     income_values.reverse()
     expense_values.reverse()
 
-    # Create a horizontal bar graph
-    plt.barh(months, income_values, color='green', label='Income')
-    plt.barh(months, expense_values, color='red', label='Expense')
+    # Create a horizontal stacked bar graph
+    plt.figure(figsize=(10, 6))
+    y_positions = range(len(months))
 
+    # Plot income and expense as stacked bars
+    plt.barh(y_positions, income_values, color='green', label='Income')
+    plt.barh(y_positions, expense_values, left=income_values, color='red', label='Expense')
+
+    # Add text annotations for income and expense values
     for i, (income, expense) in enumerate(zip(income_values, expense_values)):
-        plt.text(income, months[i], f"${income:,.2f}", va='center', ha='left')
-        plt.text(expense, months[i], f"${expense:,.2f}", va='center', ha='left')
+        plt.text(income / 2, i, f"${income:,.2f}", va='center', ha='center', color='white', fontsize=8)
+        plt.text(income + (expense / 2), i, f"${expense:,.2f}", va='center', ha='center', color='white', fontsize=8)
 
+    # Set labels and title
+    plt.yticks(y_positions, months)
     plt.title('Income vs Expense')
     plt.xlabel('Amount')
     plt.ylabel('Month')
     plt.legend()
-    plt.grid(axis='x')
+    plt.grid(axis='x', linestyle='--', alpha=0.7)
     plt.tight_layout()
-
     plt.show()
 
     print("")
@@ -199,7 +209,7 @@ def Monthly_Graph():
     if a == "m":
         main_menu()
     if a == "q":
-        Exit_Program()     
+        Exit_Program()
     
 def Get_Cat():
     disk = Disk_Location()
@@ -251,7 +261,10 @@ def Get_Date():
         return date
 
 def intro():
-    system('clear') 
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     # List of lines to center
     lines_to_center = [
         "Income vs Expense",
@@ -274,7 +287,10 @@ def intro():
         print(line)
     Get_Files()
     time.sleep(1)
-    system('clear')
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     #Check Date
     date=Get_Date()
 # List of lines to center
@@ -296,7 +312,10 @@ def intro():
     if x== "c":
        Change_Date()
     if x == " ":
-       system('clear')
+        if name == 'nt':
+            system('cls')
+        else:
+            system('clear') 
     with open("date.txt", "r") as file:
             lines = file.readlines()   
     main_menu()
@@ -312,7 +331,10 @@ def Change_Date():
             file.write(date)
             file.close()
     command="decb copy date.txt "+disk+"/IVE.DSK,DATE.DAT -r"
-    os.system(command)
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     main_menu()
     
 def Cat_Expense():
@@ -334,32 +356,25 @@ def Cat_Expense():
     if month == "8":
         month = "08"
     if month == "9":
-        month = "09"
-    
+        month = "09"    
         
     # Add all category amounts based on the selected month
     pd.set_option('display.max_rows', None)
     system('clear')
     df = pd.read_fwf("pout.txt", header=None, names=["Date", "Cat", "Amt"])
     df.index += 1
-
     # Filter rows based on the selected month
-    filtered_df = df[df['Date'].str.startswith(month)]
-   
-   
+    filtered_df = df[df['Date'].str.startswith(month)]   
     if filtered_df.empty:
         print(f"No data found for the month {month}.")
         return
-
     # Group by category and sum amounts
     category_totals = filtered_df.groupby('Cat')['Amt'].sum()
     if month == "":
         month = "All Year"
     print(f"Category totals for the month {month}:")
     print(category_totals)
-
     print("\nPress [M]enu to return.")
-
     choice = input()
     if choice.lower() == 'm':
         main_menu()
@@ -387,7 +402,10 @@ def Cat_Income():
     
     # Add all category amounts based on the selected month
     pd.set_option('display.max_rows', None)
-    system('clear')
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     df = pd.read_fwf("pin.txt", header=None, names=["Date", "Cat", "Amt"])
     df.index += 1
 
@@ -404,15 +422,17 @@ def Cat_Income():
         month = "All Year"
     print(f"Category totals for the month {month}:")
     print(category_totals)
-
     print("\nPress [M]enu to return.")
 
     choice = input()
     if choice.lower() == 'm':
         main_menu()
-        
+
 def Settings():
-    system('clear')
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     lines_to_center = [
         "Settings",
         "",
@@ -443,7 +463,10 @@ def main_menu():
     # List of lines to center
     Get_Files()
     date=Get_Date()
-    system('clear') 
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     lines_to_center = [
         "-->"+date+"<--",
         "***Income vs Expense***",
@@ -490,7 +513,10 @@ def main_menu():
 
 def List_Expense():
     pd.set_option('display.max_rows', None)
-    system('clear') 
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     df = pd.read_fwf("pout.txt",header=None, names =["Date","Cat","Amt"])
     df.index +=1
     rows_per_page = 32 
@@ -499,7 +525,10 @@ def List_Expense():
     if a=="a":  
         a=input("What Amount? ")        
         Search = df[df['Amt'].astype(str).str.contains(a)]
-        system('clear')
+        if name == 'nt':
+            system('cls')
+        else:
+          system('clear') 
         for i in range(0, len(Search), rows_per_page):
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
@@ -508,7 +537,10 @@ def List_Expense():
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 input("Press Enter to continue...")
-                system('clear')
+                if name == 'nt':
+                    system('cls')
+                else:
+                    system('clear') 
             Search_Sum= (df[df['Amt'].astype(str).str.contains(a)]['Amt'].sum())
             print("")
             #print(f"Total for search Amt-{a} is ${Search_Sum:,.2f}")
@@ -523,7 +555,10 @@ def List_Expense():
     if a=="d":
         a=input("What date? ")
         Search=(df[df['Date'].str.contains(a)])
-        system('clear')
+        if name == 'nt':
+            system('cls')
+        else:
+         system('clear') 
         for i in range(0, len(Search), rows_per_page):
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
@@ -547,7 +582,10 @@ def List_Expense():
     if a=="c":
         a=input("What Category? ")
         Search=(df[df['Cat'].str.contains(a, case=False)])
-        system('clear')
+        if name == 'nt':
+            system('cls')
+        else:
+             system('clear') 
         for i in range(0, len(Search), rows_per_page):
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
@@ -601,7 +639,10 @@ def List_Income():
     if a=="a":  
         a=input("What Amount? ")        
         Search = dfin[dfin['Amt'].astype(str).str.contains(a)]
-        system('clear')
+        if name == 'nt':
+            system('cls')
+        else:
+          system('clear') 
         for i in range(0, len(Search), rows_per_page):
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
@@ -610,7 +651,10 @@ def List_Income():
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 input("Press Enter to continue...")
-                system('clear')
+                if name == 'nt':
+                    system('cls')
+                else:
+                    system('clear') 
             Search_Sum= (dfin[dfin['Amt'].astype(str).str.contains(a)]['Amt'].sum())
             print("")
             #print(f"Total for search Amt-{a} is ${Search_Sum:,.2f}")
@@ -626,7 +670,11 @@ def List_Income():
     if a=="d":
         a=input("What date? ")
         Search=(dfin[dfin['Date'].str.contains(a)])
-        system('clear')
+        if name == 'nt':
+            system('cls')
+        else:
+         system('clear') 
+       
         for i in range(0, len(Search), rows_per_page):
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
@@ -650,7 +698,11 @@ def List_Income():
     if a=="c":
         a=input("What Category? ")
         Search=(dfin[dfin['Cat'].str.contains(a, case=False)])
-        system('clear')
+
+        if name == 'nt':
+            system('cls')
+        else:
+            system('clear') 
         for i in range(0, len(Search), rows_per_page):
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
@@ -706,76 +758,85 @@ def Delete(tbl,num,ptble,dat):
     with open(ptble, 'w') as f:
         f.write(continuous_row_string)
     command="decb copy "+ptble+" "+disk+"/IVE.DSK,"+dat+" -r"
-    os.system(command)
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
+    
     main_menu()
 
 def Enter_Income():
-       disk=Disk_Location()
-       again =0
-       system('clear')
-       date=Get_Date()
-       i=input("Amount ")
-       if i =="m":
+        disk=Disk_Location()
+        again =0
+        system('clear')
+        date=Get_Date()
+        i=input("Amount ")
+        if i =="m":
             main_menu()
-       if i =="":
+        if i =="":
             print ("Please enter a valid option")
             time.sleep(3)
             Enter_Income()
-       if i.isdigit() ==  False:
-            print ("Please enter a number option")
+        if i.isdecimal() ==  True:
+            print ("Please enter a dolar amount i.e. 1.00 -include the cents.")
             time.sleep(3)
-            Enter_Income()
-       system('clear')
-       dfcat=Get_Cat()
-       print (dfcat)
-       c=input()
-       c=int(c)
-       cat = dfcat.loc[c, 'Cat']
-       print(date+"  "+cat+"  "+i)
-       date=date+" "*5
-       catlen=len(cat)-1
-       cat=cat+" "*(10-catlen)
-       i=float(i)
-       amt = f"{i:,.2f}"
-       amtlen =len(amt)-1
-       amt=amt+" "*(9-amtlen)
-       system('clear')
+            Enter_Expense()
+        system('clear')
+        dfcat=Get_Cat()
+        print (dfcat)
+        c=input()
+        c=int(c)
+        cat = dfcat.loc[c, 'Cat']
+        print(date+"  "+cat+"  "+i)
+        date=date+" "*5
+        catlen=len(cat)-1
+        cat=cat+" "*(10-catlen)
+        i=float(i)
+        amt = f"{i:,.2f}"
+        amtlen =len(amt)-1
+        amt=amt+" "*(9-amtlen)
+
+        if name == 'nt':
+            system('cls')
+        else:
+            system('clear') 
     # List of lines to center
-       lines_to_center = [
-       "Income Transaction",
-       "",
-       "",
-       date+cat+"$"+amt,
-       "",
-       "Press [C]hange",
-       "",
-       "Press [A] another",
-       "Press [Enter] to add"
+        lines_to_center = [
+        "Income Transaction",
+        "",
+        "",
+        date+cat+"$"+amt,
+        "",
+        "Press [C]hange",
+        "",
+        "Press [A] another",
+        "Press [Enter] to add"
     ]
     # Center the lines
-       centered = center_text(lines_to_center)
+        centered = center_text(lines_to_center)
     # Print each centered line
-       for line in centered:
-           print(line)
-       income=date+cat+amt
-       a=input()
-       if a =="c":
+        for line in centered:
+            print(line)
+        income=date+cat+amt
+        a=input()
+        if a =="c":
             Enter_Expense()
-       if a =="a":
+        if a =="a":
             again =1
-       line_number=1
-       with open("in.txt", "r") as file:
-            lines = file.readlines()
-       lines[line_number - 1] = lines[line_number - 1].rstrip('\n') + income
-       with open("in.txt", 'w') as file:
-           file.writelines(lines)
-       file.close()  
-       command = "decb copy in.txt "+disk+"/IVE.DSK,IN/DAT -r"
-       os.system(command)
-       if again == 1:
-            again =0
-            Enter_Expense()
-       main_menu()
+        else:
+            line_number=1
+            with open("out.txt", "r") as file:
+                lines = file.readlines()
+            lines[line_number - 1] = lines[line_number - 1].rstrip('\n') + income
+            with open("out.txt", 'w') as file:
+                file.writelines(lines)
+            file.close()
+            command = "decb copy in.txt "+disk+"/IVE.DSK,IN.DAT -r"
+            os.system(command)           
+            if again == 1:
+                again =0
+                Enter_Income()
+            main_menu()
 
 def Enter_Expense():
        disk=Disk_Location()
@@ -790,12 +851,15 @@ def Enter_Expense():
             print ("Please enter a valid option")
             time.sleep(3)
             Enter_Expense()
-       if i.isdigit() ==  False:
-            print ("Please enter a number option")
+       if i.isdecimal() ==  True:
+            print ("Please enter a dolar amount i.e. 1.00 -include the cents.")
             time.sleep(3)
             Enter_Expense()
         
-       system('clear')
+       if name == 'nt':
+         system('cls')
+       else:
+         system('clear') 
        dfcat=Get_Cat()
        print (dfcat)
        c=input()
@@ -809,7 +873,11 @@ def Enter_Expense():
        amt = f"{i:,.2f}"
        amtlen =len(amt)
        amt=amt+" "*(9-amtlen)
-       system('clear')
+       
+       if name == 'nt':
+            system('cls')
+       else:
+            system('clear') 
     # List of lines to center
        lines_to_center = [
        "Expense Transaction",
@@ -833,22 +901,28 @@ def Enter_Expense():
             Enter_Expense()
        if a =="a":
             again =1
-       line_number=1
-       with open("out.txt", "r") as file:
-            lines = file.readlines()
-       lines[line_number - 1] = lines[line_number - 1].rstrip('\n') + income
-       with open("out.txt", 'w') as file:
-            file.writelines(lines)
-       file.close()
-       command = "decb copy out.txt "+disk+"/IVE.DSK,OUT/DAT -r"
-       os.system(command)
-       if again == 1:
-            again =0
-            Enter_Expense()
-       main_menu()
+       else:
+           line_number=1
+           with open("out.txt", "r") as file:
+               lines = file.readlines()
+           lines[line_number - 1] = lines[line_number - 1].rstrip('\n') + income
+           with open("out.txt", 'w') as file:
+               file.writelines(lines)
+           file.close()
+           command = "decb copy out.txt "+disk+"/IVE.DSK,OUT.DAT -r"
+           os.system(command)          
+           if again == 1:
+                again =0
+                Enter_Expense()       
+           main_menu() 
+            
 
 def main():
-    system('clear') 
+    #check to see if user is on windows or linux
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear') 
     intro()
 
 main()
