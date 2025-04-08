@@ -106,6 +106,26 @@ def add_new_line_after_chars(input_file, output_file, cat):
     with open(output_file, 'w') as file:
         file.write(new_content)
 
+def Monthly_IVE():
+    system('clear')
+    print("Income vs Expense")
+    dfin = pd.read_fwf("pin.txt",header=None, names =["Date","Cat","Amt"])
+    dfin['Month']=dfin['Date'].str[:2]
+    a="01"
+    print (dfin["Month"](dfin[dfin['Month'].str.contains(a, case = False)]['Amt'].sum()))
+    
+  
+  
+   
+   
+    
+    
+
+    
+    
+    print ("M      Income     Expense    Diff")
+    print ("-------------------------------------")
+
 def Get_Cat():
     disk = Disk_Location()
     input_file = 'cat.txt'
@@ -250,11 +270,14 @@ def main_menu():
     if x=="1":
         Enter_Income()
     if x=="2":
+
         Enter_Expense()
     if x=="3":
         List_Income()
     if x=="4":
         List_Expense()
+    if x=="5":
+        Monthly_IVE()
     if x=="q":
         Exit_Program()
 
@@ -327,6 +350,9 @@ def List_Expense():
             Delete(tbl,num,ptble,dat)
         else:
             List_Expense()
+    elif a == "5":
+        Monthly_IVE()
+
     elif a =="q":
         Exit_Program()
 
