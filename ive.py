@@ -111,20 +111,45 @@ def Monthly_IVE():
     print("Income vs Expense")
     dfin = pd.read_fwf("pin.txt",header=None, names =["Date","Cat","Amt"])
     dfin['Month']=dfin['Date'].str[:2]
-    a="01"
-    print (dfin["Month"](dfin[dfin['Month'].str.contains(a, case = False)]['Amt'].sum()))
-    
-  
-  
-   
-   
-    
-    
+    dfout = pd.read_fwf("pout.txt",header=None, names =["Date","Cat","Amt"])
+    dfout['Month']=dfout['Date'].str[:2]
+    print ("M          Income         Expense          Diff")
+    print ("-----------------------------------------------------")
+    for i in range(1,12):
+        if i==1:
+            a="01"
+        if i==2:
+            a="02"
+        if i==3:
+            a="03"
+        if i==4:
+            a="04"
+        if i==5:
+            a="05"
+        if i==6:
+            a="06"
+        if i==7:
+            a="07"
+        if i==8:
+            a="08"
+        if i==9:
+            a="09"
+        if i==10:
+            a="10"
+        if i==11:
+            a="11"
+        if i==12:
+            a="12"         
+        
+        Search_Month= (dfin[dfin['Month'].str.contains(a, case = False)]['Amt'].sum())
+        Search_Month_Exp= (dfout[dfout['Month'].str.contains(a, case = False)]['Amt'].sum())
+        #Search_Month=print(f"${Search_Month:,.2f}")
+        
+        print (f"Month {a}      ${Search_Month:,.2f}     ${Search_Month_Exp:,.2f}         ${Search_Month-Search_Month_Exp:,.2f}")   
 
     
     
-    print ("M      Income     Expense    Diff")
-    print ("-------------------------------------")
+   
 
 def Get_Cat():
     disk = Disk_Location()
