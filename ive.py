@@ -526,7 +526,7 @@ def List_Expense():
     a=input()
     if a=="a":  
         a=input("What Amount? ")        
-        Search = df[df['Amt'].astype(str).str.contains(a)]
+        Search = df[df['Amt'].astype(str).str.startswith(a)]
         if name == 'nt':
             system('cls')
         else:
@@ -543,7 +543,7 @@ def List_Expense():
                     system('cls')
                 else:
                     system('clear') 
-            Search_Sum= (df[df['Amt'].astype(str).str.contains(a)]['Amt'].sum())
+            Search_Sum= (df[df['Amt'].astype(str).str.startswith(a)]['Amt'].sum())
             print("")
             #print(f"Total for search Amt-{a} is ${Search_Sum:,.2f}")
             print ("[M]enu -[R]edo -[A]dd -Del#")
@@ -555,8 +555,8 @@ def List_Expense():
             if a=="a":
                 Enter_Income()
     if a=="d":
-        a=input("What date? ")
-        Search=(df[df['Date'].str.contains(a)])
+        a=input("What date? ##/## format. Need at lest 2 digits")
+        Search=(df[df['Date'].str.startswith(a)])
         if name == 'nt':
             system('cls')
         else:
@@ -583,7 +583,7 @@ def List_Expense():
         Enter_Income()
     if a=="c":
         a=input("What Category? ")
-        Search=(df[df['Cat'].str.contains(a, case=False)])
+        Search=(df[df['Cat'].str.startswith(a.upper())])
         if name == 'nt':
             system('cls')
         else:
@@ -657,7 +657,7 @@ def List_Income():
                     system('cls')
                 else:
                     system('clear') 
-            Search_Sum= (dfin[dfin['Amt'].astype(str).str.contains(a)]['Amt'].sum())
+            Search_Sum= (dfin[dfin['Amt'].astype(str).str.startswith(a)]['Amt'].sum())
             print("")
             #print(f"Total for search Amt-{a} is ${Search_Sum:,.2f}")
             print ("[M]enu -[R]edo -[A]dd -Del#")
@@ -670,8 +670,8 @@ def List_Income():
                 Enter_Income()
    
     if a=="d":
-        a=input("What date? ")
-        Search=(dfin[dfin['Date'].str.contains(a)])
+        a=input("What date? ##/## format. Need at lest 2 digits")
+        Search=(dfin[dfin['Date'].str.startswith(a)])
         if name == 'nt':
             system('cls')
         else:
@@ -699,7 +699,7 @@ def List_Income():
                 Enter_Income()
     if a=="c":
         a=input("What Category? ")
-        Search=(dfin[dfin['Cat'].str.contains(a, case=False)])
+        Search=(dfin[dfin['Cat'].str.startswith(a.upper())])
 
         if name == 'nt':
             system('cls')
