@@ -136,7 +136,7 @@ def Monthly_IVE():
         if i==11:
             a="11"
         if i==12:
-            a="12"         
+            a="12"       
         
         Search_Month= (dfin[dfin['Month'].str.contains(a, case = False)]['Amt'].sum())
         Search_Month_Exp= (dfout[dfout['Month'].str.contains(a, case = False)]['Amt'].sum())
@@ -205,7 +205,6 @@ def Monthly_Graph():
     plt.grid(axis='x')
     plt.tight_layout()
     plt.show()
-
     print("")
     print("Press [M]enu - [Q]uit")
     a = input()
