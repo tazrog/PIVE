@@ -155,6 +155,7 @@ def Monthly_Graph():
     else:
         system('clear') 
     print("Income vs Expense")
+    print("Close Graph to continue") 
     
     # Load data
     dfin = pd.read_fwf("pin.txt", header=None, names=["Date", "Cat", "Amt"])
@@ -212,15 +213,8 @@ def Monthly_Graph():
     plt.legend()
     plt.grid(axis='x', linestyle='--', alpha=0.7)
     plt.tight_layout()
-    plt.show()
-
-    print("")
-    print("Press [M]enu - [Q]uit")
-    a = input()
-    if a == "m":
-        main_menu()
-    if a == "q":
-        Exit_Program()
+    plt.show()      
+    main_menu()    
     
 def Get_Cat():
     disk = Disk_Location()
