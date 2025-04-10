@@ -206,7 +206,7 @@ def Monthly_Graph():
 
     # Set labels and title
     plt.yticks(y_positions, months)
-    plt.title('Income vs Expense (Dynamic Drawing Order)')
+    plt.title('Income vs Expense')
     plt.xlabel('Amount')
     plt.ylabel('Month')
     plt.axvline(0, color='black', linewidth=0.8, linestyle='--')  # Add a vertical line at 0
@@ -272,7 +272,7 @@ def intro():
         "",
         "For the",
         "Tandy Color Computer",
-        "Linux System",
+        "Desktop Companion",
         "",
         "",
         "Loading",
@@ -428,59 +428,51 @@ def Settings():
         system('cls')
     else:
         system('clear') 
-    lines_to_center = [
-        "Settings",
-        "",
-        "1- Change Date",
-        "2- Change Disk Location",
-        "3- Change Category",
-        "4- Back to Main Menu",
-        "",
-    ]
-    # Center the lines
-    centered = center_text(lines_to_center)
-    # Print each centered line
-    for line in centered:
-        print(line)
+    
+    print("           Settings")
+    print("      1- Change Date")
+    print("      2- Change Disk Location")
+    print("      3- Change Category")
+    print("      4- Back to Main Menu")
+     
+   
     a=input("Your Choice: ")
     if a=="1":
         Change_Date()
     if a=="2":
         Disk_Location()
     if a=="3":
-        Get_Cat()
+        if name == 'nt':
+            system('cls')
+    else:
+        system('clear') 
+        print("Please use CoCo to add and or change Categories.")
     if a=="4":
         main_menu()
     if a=="q":
         Exit_Program()    
 
 def main_menu():
-    # List of lines to center
+    
     Get_Files()
     date=Get_Date()
     if name == 'nt':
         system('cls')
     else:
         system('clear') 
-    lines_to_center = [
-        "-->"+date+"<--",
-        "***Income vs Expense***",
-         "1 - Enter Income",
-         "2 - Enter Expense",
-         "3 - List/Find Income",
-         "4 - List/Find Expense",
-         "5 - Monthly IVE",
-         "6 - IVE Graph",
-         "7 - Cat. Income",
-         "8 - Cat. Expense",
-         "9 - Settings",
-    ]
-    # Center the lines
-    centered = center_text(lines_to_center)
-    # Print each centered line
-    for line in centered:
-        print(line)
-    total()
+    
+    print("            --> "+date+" <--")
+    print("       ***Income vs Expense***")
+    print("          1 - Enter Income")
+    print("          2 - Enter Expense")
+    print("          3 - List/Find Income")
+    print("          4 - List/Find Expense")
+    print("          5 - Monthly IVE")
+    print("          6 - IVE Graph")
+    print("          7 - Cat. Income")
+    print("          8 - Cat. Expense")
+    print("          9 - Settings")  
+   
     print ("")
     x=input("Your Choice: ")
     if x=="1":
