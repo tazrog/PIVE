@@ -19,6 +19,12 @@ def center_text(lines):
     centered_lines = [line.center(terminal_width) for line in lines]
     return centered_lines
 
+def set_screen_color():
+    if name == 'nt':  # Windows
+        os.system('color 2')  # Set text color to green
+    else:  # Linux/Unix
+        print("\033[42m\033[30m", end="")  # Set background to green and text to black
+
 def Exit_Program():
     os.remove("in.txt")
     os.remove("out.txt")
@@ -101,6 +107,7 @@ def add_new_line_after_chars(input_file, output_file, cat):
         file.write(new_content)
 
 def Monthly_IVE():
+    set_screen_color()
     if name == 'nt':
         system('cls')
     else:
@@ -133,6 +140,7 @@ def Monthly_IVE():
         Exit_Program()
 
 def Monthly_Graph():
+    set_screen_color()
     if name == 'nt':
         system('cls')
     else:
@@ -241,6 +249,7 @@ def Get_Date():
         return date
 
 def intro():
+    set_screen_color()
     if name == 'nt':
         system('cls')
     else:
@@ -319,6 +328,7 @@ def Change_Date():
     main_menu()
     
 def Cat_Expense():
+    set_screen_color()
     print ("Select a month (MM): ")
     month = input("Leave blank to show year: ")  
     if month == "1":
@@ -362,6 +372,7 @@ def Cat_Expense():
         main_menu()
 
 def Cat_Income():
+    set_screen_color()
     print ("Select a month (MM): ")
     month = input("Leave blank to show year: ")    
     if month == "1":
@@ -406,7 +417,42 @@ def Cat_Income():
     if choice.lower() == 'm':
         main_menu()
 
+def Backup_DSK():
+    disk = Disk_Location()  # Get the current disk location
+    dsk_file = os.path.join(disk, "IVE.DSK")  # Path to the .DSK file
+
+    # Check if the .DSK file exists
+    if not os.path.isfile(dsk_file):
+        print("IVE.DSK file not found in the specified location.")
+        print("Please check the disk location and try again.")
+        time.sleep(3)
+        return
+
+    # Prompt the user for the backup folder
+    print("Enter the path to the backup folder:")
+    backup_folder = input("Backup Folder: ").strip()
+
+    # Ensure the backup folder exists
+    if not os.path.exists(backup_folder):
+        try:
+            os.makedirs(backup_folder)
+            print(f"Backup folder '{backup_folder}' created.")
+        except Exception as e:
+            print(f"Error creating backup folder: {e}")
+            time.sleep(3)
+            return
+
+    # Copy the .DSK file to the backup folder
+    try:
+        shutil.copy(dsk_file, backup_folder)
+        print(f"IVE.DSK file successfully backed up to '{backup_folder}'.")
+    except Exception as e:
+        print(f"Error backing up file: {e}")
+    time.sleep(3)
+    main_menu()
+
 def Settings():
+    set_screen_color()
     if name == 'nt':
         system('cls')
     else:
@@ -416,26 +462,29 @@ def Settings():
     print("      1- Change Date")
     print("      2- Change Disk Location")
     print("      3- Change Category")
-    print("      4- Back to Main Menu")
+    print("      4- Back Up .DSK File")
+    print("      5- Back to Main Menu")
      
-   
-    a=input("Your Choice: ")
-    if a=="1":
+    a = input("Your Choice: ")
+    if a == "1":
         Change_Date()
-    if a=="2":
+    elif a == "2":
         Disk_Location()
-    if a=="3":
+    elif a == "3":
         if name == 'nt':
             system('cls')
-    else:
-        system('clear') 
+        else:
+            system('clear') 
         print("Please use CoCo to add and or change Categories.")
-    if a=="4":
+    elif a == "4":
+        Backup_DSK()
+    elif a == "5":
         main_menu()
-    if a=="q":
-        Exit_Program()    
+    elif a == "q":
+        Exit_Program()
 
 def main_menu():    
+    set_screen_color()
     Get_Files()
     Get_Cat()
     date=Get_Date()
@@ -480,6 +529,7 @@ def main_menu():
         Exit_Program()
 
 def List_Expense():
+    set_screen_color()
     pd.set_option('display.max_rows', None)
     if name == 'nt':
         system('cls')
@@ -617,6 +667,7 @@ def List_Expense():
         main_menu()
 
 def List_Income():
+    set_screen_color()
     pd.set_option('display.max_rows', None)
     system('clear') 
     dfin = pd.read_fwf("pin.txt",header=None, names =["Date","Cat","Amt"])
@@ -796,6 +847,7 @@ def Delete(tbl,num,ptble,dat):
     main_menu()
 
 def Enter_Income():
+        set_screen_color()
         disk=Disk_Location()
         again =0
         system('clear')
@@ -868,6 +920,7 @@ def Enter_Income():
             main_menu()
 
 def Enter_Expense():
+       set_screen_color()
        disk=Disk_Location()
        again =0
        date=Get_Date()
@@ -945,6 +998,7 @@ def Enter_Expense():
 
 def main():
     #check to see if user is on windows or linux
+    set_screen_color()
     if name == 'nt':
         system('cls')
     else:
