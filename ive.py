@@ -155,13 +155,18 @@ def Monthly_Graph():
     else:
         system('clear') 
     print("Income vs Expense")
+    
+    # Load data
     dfin = pd.read_fwf("pin.txt", header=None, names=["Date", "Cat", "Amt"])
     dfin['Month'] = dfin['Date'].str[:2]
     dfout = pd.read_fwf("pout.txt", header=None, names=["Date", "Cat", "Amt"])
     dfout['Month'] = dfout['Date'].str[:2]
+
     months = []
     income_values = []
     expense_values = []
+
+    # Collect data for each month
     for i in range(1, 13):
         a = f"{i:02}"  # Format month as two digits (e.g., "01", "02", ..., "12")
         Search_Month = dfin[dfin['Month'].str.contains(a, case=False)]['Amt'].sum()
@@ -169,34 +174,46 @@ def Monthly_Graph():
         months.append(a)
         income_values.append(Search_Month)
         expense_values.append(Search_Month_Exp)
-        print(f"Month {a}      ${Search_Month:,.2f}     ${Search_Month_Exp:,.2f}         ${Search_Month - Search_Month_Exp:,.2f}")
-    print("-----------------------------------------------------")
-    print(f"${dfin['Amt'].sum():,.2f}   ${dfout['Amt'].sum():,.2f}         ${dfin['Amt'].sum() - dfout['Amt'].sum():,.2f}")
+
     # Reverse the order of months, income, and expense for top-to-bottom display
     months.reverse()
     income_values.reverse()
     expense_values.reverse()
-    # Create a horizontal bar graph that shows both expense and income bars on screen
+
+    # Create a horizontal bar graph with dynamic drawing order
     plt.figure(figsize=(10, 6))
-    bar_width = 0.4  # Width of each bar
-    # Create positions for the bars
     y_positions = range(len(months))
-    # Plot income and expense bars side by side
-    plt.barh([y - bar_width / 2 for y in y_positions], income_values, height=bar_width, color='green', label='Income')
-    plt.barh([y + bar_width / 2 for y in y_positions], expense_values, height=bar_width, color='red', label='Expense')
-    # Add text annotations for income and expense values
+
     for i, (income, expense) in enumerate(zip(income_values, expense_values)):
-        plt.text(income, i - bar_width / 2, f"${income:,.2f}", va='center', ha='left', color='black')
-        plt.text(expense, i + bar_width / 2, f"${expense:,.2f}", va='center', ha='left', color='black')
+        if income >= expense:
+            # Draw income first, then expense
+            plt.barh(i, income, color='green', label='Income' if i == 0 else "", edgecolor='black')
+            plt.barh(i, expense, color='red', label='Expense' if i == 0 else "", edgecolor='black')
+        else:
+            # Draw expense first, then income
+            plt.barh(i, expense, color='red', label='Expense' if i == 0 else "", edgecolor='black')
+            plt.barh(i, income, color='green', label='Income' if i == 0 else "", edgecolor='black')
+
+        # Add text annotations for income and expense values
+        # Move the highest value annotation further to the right but inside the bar
+        if income >= expense:
+            plt.text(income - (income * 0.1), i, f"${income:,.2f}", va='center', ha='right', color='white', fontsize=8)
+            plt.text(expense / 2, i, f"${expense:,.2f}", va='center', ha='center', color='white', fontsize=8)
+        else:
+            plt.text(expense - (expense * 0.1), i, f"${expense:,.2f}", va='center', ha='right', color='white', fontsize=8)
+            plt.text(income / 2, i, f"${income:,.2f}", va='center', ha='center', color='white', fontsize=8)
+
     # Set labels and title
     plt.yticks(y_positions, months)
-    plt.title('Income vs Expense')
+    plt.title('Income vs Expense (Dynamic Drawing Order)')
     plt.xlabel('Amount')
     plt.ylabel('Month')
+    plt.axvline(0, color='black', linewidth=0.8, linestyle='--')  # Add a vertical line at 0
     plt.legend()
-    plt.grid(axis='x')
+    plt.grid(axis='x', linestyle='--', alpha=0.7)
     plt.tight_layout()
     plt.show()
+
     print("")
     print("Press [M]enu - [Q]uit")
     a = input()
@@ -446,68 +463,51 @@ def Settings():
 def main_menu():
     # List of lines to center
     Get_Files()
-    date = Get_Date()
+    date=Get_Date()
     if name == 'nt':
         system('cls')
     else:
         system('clear') 
-
-    # Define a fixed-width format for menu items
-    menu_items = [
-        "1 - Enter Income",
-        "2 - Enter Expense",
-        "3 - List/Find Income",
-        "4 - List/Find Expense",
-        "5 - Monthly IVE",
-        "6 - IVE Graph",
-        "7 - Cat. Income",
-        "8 - Cat. Expense",
-        "9 - Settings",
-    ]
-
-    # Add the date and title to the menu
     lines_to_center = [
-        f"-->{date}<--",
+        "-->"+date+"<--",
         "***Income vs Expense***",
-        "",
+         "1 - Enter Income",
+         "2 - Enter Expense",
+         "3 - List/Find Income",
+         "4 - List/Find Expense",
+         "5 - Monthly IVE",
+         "6 - IVE Graph",
+         "7 - Cat. Income",
+         "8 - Cat. Expense",
+         "9 - Settings",
     ]
-
-    # Add the formatted menu items
-    for item in menu_items:
-        lines_to_center.append(item)
-
-    # Add an empty line at the end
-    lines_to_center.append("")
-
     # Center the lines
     centered = center_text(lines_to_center)
-
     # Print each centered line
     for line in centered:
         print(line)
-
     total()
-    print("")
-    x = input("Your Choice: ")
-    if x == "1":
+    print ("")
+    x=input("Your Choice: ")
+    if x=="1":
         Enter_Income()
-    if x == "2":
+    if x=="2":
         Enter_Expense()
-    if x == "3":
+    if x=="3":
         List_Income()
-    if x == "4":
+    if x=="4":
         List_Expense()
-    if x == "5":
+    if x=="5":
         Monthly_IVE()
-    if x == "6":
+    if x=="6":
         Monthly_Graph()
-    if x == "7":
+    if x=="7":
         Cat_Income()
-    if x == "8":
+    if x=="8":
         Cat_Expense()
-    if x == "9":
+    if x=="9":
         Settings()
-    if x == "q":
+    if x=="q":
         Exit_Program()
 
 def List_Expense():
