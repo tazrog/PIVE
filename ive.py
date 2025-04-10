@@ -452,9 +452,9 @@ def Settings():
     if a=="q":
         Exit_Program()    
 
-def main_menu():
-    
+def main_menu():    
     Get_Files()
+    Get_Cat()
     date=Get_Date()
     if name == 'nt':
         system('cls')
@@ -472,7 +472,7 @@ def main_menu():
     print("          7 - Cat. Income")
     print("          8 - Cat. Expense")
     print("          9 - Settings")  
-   
+    total()
     print ("")
     x=input("Your Choice: ")
     if x=="1":
@@ -518,6 +518,7 @@ def List_Expense():
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
     # Print the current chunk
+            chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
@@ -534,11 +535,53 @@ def List_Expense():
             if a=="m":
                 main_menu()
             if a=="r":
+                i=0
                 List_Expense()
             if a=="a":
                 Enter_Expense()
+    if a=="c":
+            a=input("What Category? ")
+            Search=(df[df['Cat'].str.startswith(a.upper())])
+            if name == 'nt':
+                system('cls')
+            else:
+                system('clear') 
+            for i in range(0, len(Search), rows_per_page):
+    # Get the current chunk of rows
+                chunk = Search.iloc[i:i + rows_per_page]
+    # Print the current chunk
+                chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
+                print(chunk)
+    # Pause and wait for user input to continue
+            if i + rows_per_page < len(Search):
+                input("Press Enter to continue...")
+                system('clear')
+            Search_Sum= (df[df['Cat'].str.startswith(a.upper())]['Amt'].sum())
+            print ("")
+            print(f"Total for search Cat-{a} is ${Search_Sum:,.2f}")
+            print ("[M]enu -[R]edo -[A]dd -Del#")
+            a=input()        
+            if a=="m":
+                main_menu()
+            elif a=="r":
+                i=0
+                List_Expense()
+            elif a=="a":
+                Enter_Expense()
+            elif a.isdigit():
+                num=int(a)
+                tbl="pout.txt"
+                ptble="out.txt"
+                dat="OUT.DAT"
+                print ("Are you sure you want to delete")
+                print (df.loc[num])
+                b=input()
+                if b =="y":
+                    Delete(tbl,num,ptble,dat)
+                else:
+                    List_Expense()
     if a=="d":
-        a=input("What date? ##/## format. Need at lest 2 digits")
+        a=input("What date? ##/## format. Need at least 2 digits ")
         Search=(df[df['Date'].str.startswith(a)])
         if name == 'nt':
             system('cls')
@@ -564,25 +607,7 @@ def List_Expense():
             List_Expense()
         if a=="a":
             Enter_Expense()
-        if a=="c":
-            a=input("What Category? ")
-            Search=(df[df['Cat'].str.startswith(a.upper())])
-            if name == 'nt':
-                system('cls')
-            else:
-                system('clear') 
-        for i in range(0, len(Search), rows_per_page):
-    # Get the current chunk of rows
-            chunk = Search.iloc[i:i + rows_per_page]
-    # Print the current chunk
-            print(chunk)
-    # Pause and wait for user input to continue
-            if i + rows_per_page < len(Search):
-                input("Press Enter to continue...")
-                system('clear')
-            Search_Sum= (df[df['Cat'].str.contains(a, case = False)]['Amt'].sum())
-            print ("")
-            print(f"Total for search Cat-{a} is ${Search_Sum:,.2f}")
+        
         print ("[M]enu -[R]edo -[A]dd -Del#")
         a=input()        
         if a=="m":
@@ -627,6 +652,7 @@ def List_Income():
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
     # Print the current chunk
+            chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
@@ -643,11 +669,56 @@ def List_Income():
             if a=="m":
                 main_menu()
             if a=="r":
+                i=0
                 List_Income()
             if a=="a":
-                Enter_Income()   
+                Enter_Income()  
+    if a=="c":
+        a=input("What Category? ")
+        Search=(dfin[dfin['Cat'].str.startswith(a.upper())])
+        if name == 'nt':
+            system('cls')
+        else:
+            system('clear') 
+        for i in range(0, len(Search), rows_per_page):
+# Get the current chunk of rows
+            chunk = Search.iloc[i:i + rows_per_page]
+# Print the current chunk
+            chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
+            print(chunk)
+# Pause and wait for user input to continue
+        if i + rows_per_page < len(Search):
+            input("Press Enter to continue...")
+            if name == 'nt':
+                system('cls')
+            else:
+                system('clear') 
+        Search_Sum= (dfin[dfin['Cat'].str.startswith(a.upper())]['Amt'].sum())
+        print ("")
+        print(f"Total for search Cat-{a} is ${Search_Sum:,.2f}")
+        print ("[M]enu -[R]edo -[A]dd -Del#")
+        a=input()        
+        if a=="m":
+            main_menu()
+        elif a=="r":
+            i=0
+            List_Income()
+        elif a=="a":
+            Enter_Income()
+        elif a.isdigit():
+            num=int(a)
+            tbl="pin.txt"
+            ptble="in.txt"
+            dat="IN.DAT"
+            print ("Are you sure you want to delete")
+            print (dfin.loc[num])
+            b=input()
+            if b =="y":
+                Delete(tbl,num,ptble,dat)
+            else:
+                List_Income() 
     if a=="d":
-        a=input("What date? ##/## format. Need at lest 2 digits")
+        a=input("What date? ##/## format. Need at least 2 digits ")
         Search=(dfin[dfin['Date'].str.startswith(a)])
         if name == 'nt':
             system('cls')
@@ -657,6 +728,7 @@ def List_Income():
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
     # Print the current chunk
+            chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
@@ -685,12 +757,13 @@ def List_Income():
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
     # Print the current chunk
+            chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 input("Press Enter to continue...")
                 system('clear')
-            Search_Sum= (dfin[dfin['Cat'].str.contains(a, case = False)]['Amt'].sum())
+            Search_Sum= (dfin[dfin['Cat'].str.startswith(a.upper())]['Amt'].sum())
             print ("")
             print(f"Total for search Cat-{a} is ${Search_Sum:,.2f}")
             print ("[M]enu -[R]edo -[A]dd -Del#")
