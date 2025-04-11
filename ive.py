@@ -127,11 +127,11 @@ def Monthly_IVE():
         a = f"{i:02}"  # Format month as two digits (e.g., "01", "02", ..., "12")
         Search_Month = dfin[dfin['Month'].str.contains(a, case=False)]['Amt'].sum()
         Search_Month_Exp = dfout[dfout['Month'].str.contains(a, case=False)]['Amt'].sum()
-        print(f"{a:>5} ${Search_Month:>14,.2f} ${Search_Month_Exp:>14,.2f} ${Search_Month-Search_Month_Exp:>14,.2f}")
+        print(f"{a:>5} {f'${Search_Month:,.2f}':>15} {f'${Search_Month_Exp:,.2f}':>15} {f'${Search_Month-Search_Month_Exp:,.2f}':>15}")
 
     # Print totals
     print("-" * 50)
-    print(f"{'Total':>5} ${dfin['Amt'].sum():>14,.2f} ${dfout['Amt'].sum():>14,.2f} ${dfin['Amt'].sum()-dfout['Amt'].sum():>14,.2f}")
+    print(f"{'Total':>5} {f'${dfin['Amt'].sum():,.2f}':>15} {f'${dfout['Amt'].sum():,.2f}':>15} {f'${dfin['Amt'].sum()-dfout['Amt'].sum():,.2f}':>15}")
     print("Press [M]enu - [Q]uit")
     a = input()
     if a == "m":
@@ -450,6 +450,7 @@ def Backup_DSK():
         print(f"Error backing up file: {e}")
     time.sleep(3)
     main_menu()
+
 
 def Settings():
     set_screen_color()
