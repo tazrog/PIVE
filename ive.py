@@ -530,6 +530,7 @@ def main_menu():
         Exit_Program()
 
 def List_Expense():
+    disk = Disk_Location()
     set_screen_color()
     pd.set_option('display.max_rows', None)
     if name == 'nt':
@@ -612,6 +613,7 @@ def List_Expense():
                 b=input()
                 if b =="y":
                     Delete(tbl,num,ptble,dat)
+                                        
                 else:
                     List_Expense()
     if a=="d":
@@ -633,15 +635,7 @@ def List_Expense():
             Search_Sum= (df[df['Date'].str.contains(a)]['Amt'].sum())
             print("")
             print(f"Total for search date-{a} is ${Search_Sum:,.2f}") 
-        print ("[M]enu -[R]edo -[A]dd -Del#")
-        a=input()
-        if a=="m":
-            main_menu()
-        if a=="r":
-            List_Expense()
-        if a=="a":
-            Enter_Expense()
-        
+                
         print ("[M]enu -[R]edo -[A]dd -Del#")
         a=input()        
         if a=="m":
@@ -660,6 +654,7 @@ def List_Expense():
             b=input()
             if b =="y":
                 Delete(tbl,num,ptble,dat)
+                               
             else:
                 List_Expense()
         
@@ -669,6 +664,7 @@ def List_Expense():
 
 def List_Income():
     set_screen_color()
+    disk = Disk_Location()
     pd.set_option('display.max_rows', None)
     system('clear') 
     dfin = pd.read_fwf("pin.txt",header=None, names =["Date","Cat","Amt"])
@@ -750,6 +746,8 @@ def List_Income():
             b=input()
             if b =="y":
                 Delete(tbl,num,ptble,dat)
+                command="decb copy "+ptble+" "+disk+"/IVE.DSK,"+dat+" -r"
+                os.system(command)
             else:
                 List_Income() 
     if a=="d":
@@ -821,6 +819,7 @@ def List_Income():
                 b=input()
                 if b =="y":
                     Delete(tbl,num,ptble,dat)
+                    
                 else:
                     List_Income()
     main_menu()
@@ -841,11 +840,12 @@ def Delete(tbl,num,ptble,dat):
     with open(ptble, 'w') as f:
         f.write(continuous_row_string)
     command="decb copy "+ptble+" "+disk+"/IVE.DSK,"+dat+" -r"
+    os.system(command)
     if name == 'nt':
         system('cls')
     else:
         system('clear')     
-    main_menu()
+    return
 
 def Enter_Income():
         set_screen_color()
