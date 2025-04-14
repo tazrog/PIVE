@@ -21,7 +21,7 @@ def center_text(lines):
 
 def set_screen_color():
     if name == 'nt':  # Windows
-        os.system('color 2')  # Set text color to green
+        os.system('color 20')  # Set background to green and text to black
     else:  # Linux/Unix
         print("\033[42m\033[30m", end="")  # Set background to green and text to black
 
@@ -78,15 +78,15 @@ def Disk_Location():
 
 def Get_Files():
     disk = Disk_Location()
-    command = "decb copy "+disk+"/IVE.DSK,OUT.DAT out.txt"
+    command = "decb copy "+disk+"\\IVE.DSK,OUT.DAT out.txt"
     os.system(command)
-    command = "decb copy "+disk+"/IVE.DSK,IN.DAT in.txt"
+    command = "decb copy "+disk+"\\IVE.DSK,IN.DAT in.txt"
     os.system(command)
-    command = "decb copy "+disk+"/IVE.DSK,CAT.DAT cat.txt"
+    command = "decb copy "+disk+"\\IVE.DSK,CAT.DAT cat.txt"
     os.system(command)
-    command = "decb copy "+disk+"/IVE.DSK,DATE.DAT date.txt"
+    command = "decb copy "+disk+"\\IVE.DSK,DATE.DAT date.txt"
     os.system(command)
-    command = "decb copy "+disk+"/IVE.DSK,YEAR.DAT year.txt"
+    command = "decb copy "+disk+"\\IVE.DSK,YEAR.DAT year.txt"
     os.system(command)
 
 def add_new_line_after_chars(input_file, output_file, cat):
@@ -319,7 +319,7 @@ def Change_Date():
     with open("date.txt", "w") as file:
             file.write(date)
             file.close()
-    command="decb copy date.txt "+disk+"/IVE.DSK,DATE.DAT -r"
+    command="decb copy date.txt "+disk+"\\IVE.DSK,DATE.DAT -r"
     os.system(command)
     if name == 'nt':
         system('cls')
@@ -746,7 +746,7 @@ def List_Income():
             b=input()
             if b =="y":
                 Delete(tbl,num,ptble,dat)
-                command="decb copy "+ptble+" "+disk+"/IVE.DSK,"+dat+" -r"
+                command="decb copy "+ptble+" "+disk+"\\IVE.DSK,"+dat+" -r"
                 os.system(command)
             else:
                 List_Income() 
@@ -839,7 +839,7 @@ def Delete(tbl,num,ptble,dat):
 # Save the continuous row to a text file
     with open(ptble, 'w') as f:
         f.write(continuous_row_string)
-    command="decb copy "+ptble+" "+disk+"/IVE.DSK,"+dat+" -r"
+    command="decb copy "+ptble+" "+disk+"\\IVE.DSK,"+dat+" -r"
     os.system(command)
     if name == 'nt':
         system('cls')
@@ -913,7 +913,7 @@ def Enter_Income():
             with open("out.txt", 'w') as file:
                 file.writelines(lines)
             file.close()
-            command = "decb copy in.txt "+disk+"/IVE.DSK,IN.DAT -r"
+            command = "decb copy in.txt "+disk+"\\IVE.DSK,IN.DAT -r"
             os.system(command)           
             if again == 1:
                 again =0
@@ -990,7 +990,7 @@ def Enter_Expense():
            with open("out.txt", 'w') as file:
                file.writelines(lines)
            file.close()
-           command = "decb copy out.txt "+disk+"/IVE.DSK,OUT.DAT -r"
+           command = "decb copy out.txt "+disk+"\\IVE.DSK,OUT.DAT -r"
            os.system(command)          
            if again == 1:
                 again =0
