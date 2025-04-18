@@ -1,7 +1,7 @@
 #Income vs Expense Python module
 #Designed by tazrog
 #2025
-#For Windows
+#For Windows and Linux
 
 import pandas as pd
 import os
@@ -62,6 +62,10 @@ def Exit_Program():
     if os.path.exists("pcat.txt"):
         os.remove("pcat.txt")    
     print ("Files Deleted")
+    if name == 'nt':  # Windows
+        system('cls')
+    else:  # Linux/Unix        
+        system('clear')
     sys.exit()
     
 def Disk_Location():
@@ -524,7 +528,6 @@ def Backup_DSK():
     time.sleep(3)
     main_menu()
 
-
 def Settings():
     set_screen_color()
     
@@ -536,9 +539,8 @@ def Settings():
     print("      5- BACK TO MAIN MENU")
     print("Press the respective key for your choice:")
 
-    while True:
-        if msvcrt.kbhit():  # Check if a key is pressed
-            key = msvcrt.getch().decode('utf-8').lower()  # Get the key and convert to lowercase
+    while True:        
+            key = get_keypress()  # Get the key and convert to lowercase
             if key == "1":
                 Change_Date()
                 break
@@ -1086,18 +1088,17 @@ def Enter_Expense():
             Enter_Expense()
        if a =="a" or a=="A":
             again =1
+       line_number=1
+       with open("out.txt", "r") as file:
+            lines = file.readlines()
+       lines[line_number - 1] = lines[line_number - 1].rstrip('\n') + income
+       with open("out.txt", 'w') as file:
+            file.writelines(lines)
+       file.close()
+       if name == 'nt':  # Windows
+            command = "decb copy out.txt "+disk+"\\IVE.DSK,OUT.DAT -r"
+            os.system(command)
        else:
-           line_number=1
-           with open("out.txt", "r") as file:
-               lines = file.readlines()
-           lines[line_number - 1] = lines[line_number - 1].rstrip('\n') + income
-           with open("out.txt", 'w') as file:
-               file.writelines(lines)
-           file.close()
-           if name == 'nt':  # Windows
-               command = "decb copy out.txt "+disk+"\\IVE.DSK,OUT.DAT -r"
-               os.system(command)
-           else:
             command = "decb copy out.txt "+disk+"/IVE.DSK,OUT.DAT -r"
             os.system(command)          
        if again == 1:
@@ -1105,8 +1106,7 @@ def Enter_Expense():
             Enter_Expense()       
        main_menu()             
 
-def main():
-   
+def main():   
     set_screen_color()    
     intro()
 

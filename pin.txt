@@ -1,0 +1,24 @@
+01/02     HEALTH     218      
+01/03     SALARY     2537.34  
+01/10     HEALTH     13       
+01/18     SALARY     2537.34  
+01/18     W.TRAV     158.76   
+01/31     INTEREST   473.6    
+01/31     INTEREST   12.64    
+02/01     SALARY     2581.37  
+02/10     W.TRAV     325      
+02/14     SALARY     2581.37  
+02/18     W.TRAV     387      
+02/28     INTEREST   442.9    
+02/28     INTEREST   10.98    
+03/01     SALARY     2588.83  
+03/15     SALARY     2588.83  
+03/28     SALARY     2588.83  
+03/28     INTEREST   506.61   
+03/31     INTEREST   11.5     
+04/01     RETIRE     2035.86  
+03/01     RETIRE     2035.86  
+01/01     RETIRE     2037.36  
+02/01     RETIRE     2034.36  
+04/11     SALARY     1000.00  
+ 
