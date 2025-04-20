@@ -2,6 +2,7 @@
 #Designed by tazrog
 #2025
 #For Windows and Linux
+#Needs Drivewire4 to sync with coco
 
 import pandas as pd
 import os
@@ -36,9 +37,11 @@ def get_keypress():
 
 again =0
 def center_text(lines):
+
     # Get the terminal size
     terminal_size = shutil.get_terminal_size()
     terminal_width = terminal_size.columns
+
     # Center each line and store in a new list
     centered_lines = [line.center(terminal_width) for line in lines]
     return centered_lines
@@ -71,10 +74,12 @@ def Exit_Program():
 def Disk_Location():
     # Check if the disk.txt file exists
     if os.path.isfile("disk.txt"):
+
         # Read the disk location from the file
         with open("disk.txt", "r") as f:
             disk = f.read().strip()        
         return disk   
+    
     # Check if the IVE.DSK file exists in the directory
     if name == 'nt':  # Windows
         if os.path.isfile("disk\\IVE.DSK"):
@@ -90,9 +95,11 @@ def Disk_Location():
     print("Please enter the location of the IVE.DSK file.")
     print("Example: /home/user/IVE.DSK")
     disk=input("Enter the location of the IVE.DSK file: ")
+
     # Check if the file exists 
     if name == 'nt':  # Windows
         if os.path.isfile(disk+"\\IVE.DSK"):
+
             #Save disk loacation to txt file
             with open("disk.txt", "w") as f:
                 f.write(disk)
@@ -101,10 +108,11 @@ def Disk_Location():
         else:
             print("IVE.DSK file not found in the specified location.")
             print("Please check the location and try again.")
+
             # Prompt the user for the location of the IVE.DSK file
             disk=input("Enter the location of the IVE.DSK file: ")
-            # Check if the file exists
-            
+
+            # Check if the file exists            
             if os.path.isfile(disk+"\\IVE.DSK"):
                 #Save disk loacation to txt file
                 with open("disk.txt", "w") as f:
@@ -113,6 +121,7 @@ def Disk_Location():
                 print("IVE.DSK file found in the specified location.")  
     else:
         if os.path.isfile(disk+"/IVE.DSK"):
+
             #Save disk loacation to txt file
             with open("disk.txt", "w") as f:
                 f.write(disk)
@@ -121,11 +130,12 @@ def Disk_Location():
         else:
             print("IVE.DSK file not found in the specified location.")
             print("Please check the location and try again.")
+
             # Prompt the user for the location of the IVE.DSK file
             disk=input("Enter the location of the IVE.DSK file: ")
+
             # Check if the file exists
             if os.path.isfile(disk+"/IVE.DSK"):
-                #Save disk loacation to txt file
                 with open("disk.txt", "w") as f:
                     f.write(disk)
                 f.close()
@@ -158,7 +168,6 @@ def Get_Files():
         command = "decb copy "+disk+"/IVE.DSK,YEAR.DAT year.txt"
         os.system(command)
 
-
 def add_new_line_after_chars(input_file, output_file, cat):
     char_val=30
     if cat == 1:
@@ -183,9 +192,11 @@ def Monthly_IVE():
     dfin['Month'] = dfin['Date'].str[:2]
     dfout = pd.read_fwf("pout.txt", header=None, names=["Date", "Cat", "Amt"])
     dfout['Month'] = dfout['Date'].str[:2]
+    
     # Print header with right-aligned columns
     print(f"{'M':>5} {'Income':>15} {'Expense':>15} {'Diff':>15}")
     print("-" * 50)
+
     # Iterate through each month and calculate totals
     for i in range(1, 13):
         a = f"{i:02}"  # Format month as two digits (e.g., "01", "02", ..., "12")
@@ -206,12 +217,14 @@ def Monthly_IVE():
 def Monthly_Graph():
     set_screen_color()    
     print("INCOME vs EXPENSE")
-    print("CLOSE GRAPH TO RETURN")     
+    print("CLOSE GRAPH TO RETURN")   
+
     # Load data
     dfin = pd.read_fwf("pin.txt", header=None, names=["Date", "Cat", "Amt"])
     dfin['Month'] = dfin['Date'].str[:2]
     dfout = pd.read_fwf("pout.txt", header=None, names=["Date", "Cat", "Amt"])
     dfout['Month'] = dfout['Date'].str[:2]
+
     # Map numeric months to their respective abbreviations
     month_labels = {
         "01": "JAN", "02": "FEB", "03": "MAR", "04": "APR",
@@ -221,6 +234,7 @@ def Monthly_Graph():
     months = [f"{i:02}" for i in range(1, 13)]  # Ensure all months (01-12) are included
     income_values = []
     expense_values = []
+
     # Collect data for each month
     for a in months:
         Search_Month = dfin[dfin['Month'].str.contains(a, case=False)]['Amt'].sum()
@@ -242,10 +256,12 @@ def Monthly_Graph():
     for i, (income, expense) in enumerate(zip(income_values, expense_values)):
         if income > 0 or expense > 0:  # Only plot bars if income or expense is greater than 0
             if income >= expense:
+
                 # Draw income first, then expense
                 plt.barh(i, income, color='green', label='Income' if i == 0 else "", edgecolor='black')
                 plt.barh(i, expense, color='red', label='Expense' if i == 0 else "", edgecolor='black')
             else:
+
                 # Draw expense first, then income
                 plt.barh(i, expense, color='red', label='Expense' if i == 0 else "", edgecolor='black')
                 plt.barh(i, income, color='green', label='Income' if i == 0 else "", edgecolor='black')
@@ -272,7 +288,6 @@ def Monthly_Graph():
     x_ticks = ax.get_xticks()
     x_ticks = [tick for tick in x_ticks if tick != 0]  # Exclude zero
     ax.set_xticks(x_ticks)
-
     plt.tight_layout()
     plt.show()      
     main_menu()
@@ -318,9 +333,7 @@ def Get_Date():
         file.close()
         return date
 
-def intro():
-     
-    
+def intro():     
     print("     INCOME vs EXPENSE     ")
     print("       CREATED BY")
     print("         TAZROG")
@@ -330,13 +343,13 @@ def intro():
     print("   TANDY COLOR COMPUTER")
     print("     DESKTOP COMPANION")
     print("")
-    print("         LOADING")
-  
+    print("         LOADING")  
     Get_Files()
     time.sleep(2)
     date = Get_Date()  
-    set_screen_color()    
+    set_screen_color() 
 
+    #Date Screen
     print("     INCOME vs EXPENSE")
     print("")
     print("")
@@ -425,11 +438,13 @@ def Cat_Expense():
     system('clear')
     df = pd.read_fwf("pout.txt", header=None, names=["Date", "Cat", "Amt"])
     df.index += 1
+
     # Filter rows based on the selected month
     filtered_df = df[df['Date'].str.startswith(month)]   
     if filtered_df.empty:
         print(f"No data found for the month {month}.")
         return
+    
     # Group by category and sum amounts
     category_totals = filtered_df.groupby('Cat')['Amt'].sum()
     if month == "":
@@ -465,6 +480,7 @@ def Cat_Income():
         month = "09"    
     if month == "m" or month =="M":  
         main_menu()
+
     # Add all category amounts based on the selected month
     pd.set_option('display.max_rows', None)
     if name == 'nt':
@@ -473,6 +489,7 @@ def Cat_Income():
         system('clear') 
     df = pd.read_fwf("pin.txt", header=None, names=["Date", "Cat", "Amt"])
     df.index += 1
+
     # Filter rows based on the selected month
     filtered_df = df[df['Date'].str.startswith(month)]
     if filtered_df.empty:
@@ -524,8 +541,7 @@ def Backup_DSK():
     main_menu()
 
 def Settings():
-    set_screen_color()
-    
+    set_screen_color()    
     print("           Settings")
     print("      1- CHANGE DATE")
     print("      2- CHANGE DISK LOCATION")
@@ -634,11 +650,14 @@ def List_Expense():
         else:
           system('clear') 
         for i in range(0, len(Search), rows_per_page):
+
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
+
     # Print the current chunk
             chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
+
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 x= input("ENTER CONT [M]ENU? ")
@@ -650,6 +669,7 @@ def List_Expense():
                     system('clear') 
             Search_Sum= (df[df['Amt'].astype(str).str.startswith(a)]['Amt'].sum())
             print("")
+
             #print(f"Total for search Amt-{a} is ${Search_Sum:,.2f}")
             a=input ("[M]ENU -[R]EDO -[A]DD -DEL# ")
             
@@ -668,11 +688,14 @@ def List_Expense():
             else:
                 system('clear') 
             for i in range(0, len(Search), rows_per_page):
+
     # Get the current chunk of rows
                 chunk = Search.iloc[i:i + rows_per_page]
+
     # Print the current chunk
                 chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
                 print(chunk)
+
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 x= input("ENTER CONT [M]ENU? ")
@@ -682,8 +705,7 @@ def List_Expense():
             Search_Sum= (df[df['Cat'].str.startswith(a.upper())]['Amt'].sum())
             print ("")
             print(f"TOTAL ? CAT-{a} ${Search_Sum:,.2f}")
-            a=input ("[M]ENU -[R]EDO -[A]DD -DEL# ")
-                   
+            a=input ("[M]ENU -[R]EDO -[A]DD -DEL# ")                   
             if a=="m" or a=="M":
                 main_menu()
             elif a=="r" or a=="R":
@@ -711,10 +733,13 @@ def List_Expense():
         else:
          system('clear') 
         for i in range(0, len(Search), rows_per_page):
+
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
+            
     # Print the current chunk
             print(chunk)
+
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 x= input("ENTER CONT [M]ENU? ")
@@ -764,11 +789,14 @@ def List_Income():
         else:
           system('clear') 
         for i in range(0, len(Search), rows_per_page):
+
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
+
     # Print the current chunk
             chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
+
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 x= input("ENTER CONT [M]ENU? ")
@@ -780,6 +808,7 @@ def List_Income():
                     system('clear') 
             Search_Sum= (dfin[dfin['Amt'].astype(str).str.startswith(a)]['Amt'].sum())
             print("")
+
             #print(f"Total for search Amt-{a} is ${Search_Sum:,.2f}")
             a=input ("[M]ENU -[R]EDO -[A]DD -DEL# ")            
             if a=="m" or a=="M":
@@ -797,11 +826,14 @@ def List_Income():
         else:
             system('clear') 
         for i in range(0, len(Search), rows_per_page):
+
 # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
+
 # Print the current chunk
             chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
+
 # Pause and wait for user input to continue
         if i + rows_per_page < len(Search):
             x= input("ENTER CONT [M]ENU? ")
@@ -848,11 +880,14 @@ def List_Income():
         else:
          system('clear')        
         for i in range(0, len(Search), rows_per_page):
+
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
+
     # Print the current chunk
             chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
+
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 x= input("ENTER CONT [M]ENU? ")
@@ -878,11 +913,14 @@ def List_Income():
         else:
             system('clear') 
         for i in range(0, len(Search), rows_per_page):
+
     # Get the current chunk of rows
             chunk = Search.iloc[i:i + rows_per_page]
+
     # Print the current chunk
             chunk['Amt'] = chunk['Amt'].apply(lambda x: f"${x:,.2f}")
             print(chunk)
+
     # Pause and wait for user input to continue
             if i + rows_per_page < len(Search):
                 x= input("ENTER CONT [M]ENU? ")
@@ -910,8 +948,7 @@ def List_Income():
                 print (dfin.loc[num])
                 b=input()
                 if b =="y":
-                    Delete(tbl,num,ptble,dat)
-                    
+                    Delete(tbl,num,ptble,dat)                    
                 else:
                     List_Income()
     main_menu()
@@ -923,11 +960,14 @@ def Delete(tbl,num,ptble,dat):
     df=df.drop(index=num)
     continuous_row = []
     for index, row in df.iterrows():
+
     # For each row, iterate through each column
         for value in row:
             continuous_row.append(f"{str(value):<10}")  # Format values to be 10 characters wide
+
 # Join the list into a single string with a single space between each formatted entry
     continuous_row_string = ''.join(continuous_row)
+
 # Save the continuous row to a text file
     with open(ptble, 'w') as f:
         f.write(continuous_row_string)
@@ -979,6 +1019,7 @@ def Enter_Income():
             system('cls')
         else:
             system('clear') 
+
     # List of lines to center
         lines_to_center = [
         "INCOME TRANSACTION",
@@ -993,6 +1034,7 @@ def Enter_Income():
     ]
     # Center the lines
         centered = center_text(lines_to_center)
+
     # Print each centered line
         for line in centered:
             print(line)
@@ -1060,6 +1102,7 @@ def Enter_Expense():
             system('cls')
        else:
             system('clear') 
+
     # List of lines to center
        lines_to_center = [
        "EXPENSE TRANSACTION",
@@ -1074,6 +1117,7 @@ def Enter_Expense():
     ]
     # Center the lines
        centered = center_text(lines_to_center)
+
     # Print each centered line
        for line in centered:
            print(line)
