@@ -319,26 +319,24 @@ def Get_Date():
         return date
 
 def intro():
-    set_screen_color()
+     
     
     print("     INCOME vs EXPENSE     ")
     print("       CREATED BY")
-    print(f"{' ' * 10}TAZROG")
-    print("       2025")
+    print("         TAZROG")
+    print("          2025")
     print("")
-    print("FOR THE")
-    print("TANDY COLOR COMPUTER")
-    print("DESKTOP COMPANION")
+    print("         FOR THE")
+    print("   TANDY COLOR COMPUTER")
+    print("     DESKTOP COMPANION")
     print("")
-    print("LOADING")
+    print("         LOADING")
   
     Get_Files()
     time.sleep(2)
-    if name == 'nt':
-        system('cls')
-    else:
-        system('clear') 
-    date = Get_Date()    
+    date = Get_Date()  
+    set_screen_color()    
+
     print("     INCOME vs EXPENSE")
     print("")
     print("")
@@ -394,10 +392,7 @@ def Change_Date():
     else:
         command="decb copy date.txt "+disk+"/IVE.DSK,DATE.DAT -r"
         os.system(command)
-    if name == 'nt':
-        system('cls')
-    else:
-        system('clear') 
+    set_screen_color()
     main_menu()
     
 def Cat_Expense():
